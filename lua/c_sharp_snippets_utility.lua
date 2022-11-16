@@ -9,8 +9,10 @@ local M = {}
 
 M.get_relative_file_path = function ()
     local full_path = vim.fn.expand('%:p:h')
+
     local cwd = vim.loop.cwd()
-    local start_index, end_index = string.find(full_path, cwd)
+
+    local start_index, end_index = string.find(full_path, cwd, 1, true)
 
     if start_index == nil or end_index == nil or start_index~=1 then
         print("The current working directory could not be found in the full path to the file")
