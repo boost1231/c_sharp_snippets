@@ -20,7 +20,7 @@ ls.config.setup({
 
 local path_separator = "/"
 
-if jit and jit.os == "windows" then
+if jit and jit.os == "Windows" then
     path_separator = "\\"
 end
 
