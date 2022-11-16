@@ -1,3 +1,4 @@
+local utility = require("c_sharp_snippets_utility")
 local lsp_helper = require("lsp_helper")
 
 local ls = require("luasnip")
@@ -18,36 +19,6 @@ ls.config.setup({
     enable_autosnippets = true,
 })
 
-local path_separator = "/"
-
-if jit and jit.os == "Windows" then
-    path_separator = "\\"
-end
-
-local function get_relative_file_path()
-    local full_path = vim.fn.expand('%:p:h')
-    local cwd = vim.loop.cwd()
-    local start_index, end_index = string.find(full_path, cwd)
-
-    if start_index == nil or end_index == nil or start_index~=1 then
-        print("The current working directory could not be found in the full path to the file")
-        return
-    end
-
-    return string.sub(full_path, end_index + 2, -1)
-end
-
-local function get_namespace()
-    local relative_path = get_relative_file_path()
-
-    if relative_path == nil then return end
-
-    return string.gsub(relative_path, path_separator, ".")
-end
-
-local function get_filename()
-    return vim.fn.expand("%:t:r")
-end
 
 return {
 }, {
@@ -100,8 +71,8 @@ return {
             public record <>(<>);
             ]],
             {
-                f(get_namespace),
-                f(get_filename),
+                f(utility.get_namespace),
+                f(utility.get_filename),
                 i(0),
             }
         )
@@ -119,10 +90,10 @@ return {
             }
             ]],
             {
-                f(get_namespace),
+                f(utility.get_namespace),
                 c(1, {t("public"), t("internal")}),
                 c(2, {t("class"), t("record")}),
-                f(get_filename),
+                f(utility.get_filename),
                 i(0),
             }
         )
