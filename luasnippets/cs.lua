@@ -91,7 +91,7 @@ return {
             ]],
             {
                 f(utility.get_namespace),
-                c(1, {t("public"), t("internal")}),
+                c(1, {t("internal"), t("public")}),
                 c(2, {t("class"), t("record")}),
                 f(utility.get_filename),
                 i(0),
