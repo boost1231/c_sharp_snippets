@@ -66,7 +66,7 @@ M.get_signatures = function()
 
         for _, parameter in ipairs(signature.parameters) do
             local components = vim.split(parameter.label, " ")
-            table.insert(params, components[2])
+            table.insert(params, components[#components])
         end
 
         local sig = {
