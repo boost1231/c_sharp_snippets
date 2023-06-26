@@ -1,33 +1,35 @@
-
-local path_separator = "/"
-
-if jit and jit.os == "Windows" then
-    path_separator = "\\"
-end
+local util = require 'lspconfig.util'
 
 local M = {}
 
-M.get_relative_file_path = function ()
-    local full_path = vim.fn.expand('%:p:h')
+M.get_buffer_dir_relative_to_parent_dir_of_csproj_dir = function ()
+    -- 'lspconfig.util' uses the "/" as the path seperator even on windows.
+    -- nvim_buf_get_name actuall returns it with the "\" but we call "sanitize"
+    -- so that the 'lspconfig.util' can deal with it.
 
-    local cwd = vim.loop.cwd()
+    local bufname = util.path.sanitize(vim.api.nvim_buf_get_name(0))
 
-    local start_index, end_index = string.find(full_path, cwd, 1, true)
+    local csproj_dir =  util.root_pattern("*.csproj")(bufname)
 
-    if start_index == nil or end_index == nil or start_index~=1 then
-        print("The current working directory could not be found in the full path to the file")
-        return
-    end
+    local buf_dir = vim.fn.fnamemodify(bufname, ':h')
 
-    return string.sub(full_path, end_index + 2, -1)
+    -- csproj_one_up_dir is the directory that containes the directory which
+    -- houses the csproj file.
+    local csproj_one_up_dir = vim.fn.fnamemodify(csproj_dir, ':h')
+
+    local _, end_index = string.find(buf_dir, csproj_one_up_dir, 1, true)
+
+    return string.sub(buf_dir, end_index + 2, -1)
 end
 
 M.get_namespace = function ()
-    local relative_path = M.get_relative_file_path()
+    local relative_path = M.get_buffer_dir_relative_to_parent_dir_of_csproj_dir()
 
     if relative_path == nil then return end
 
-    return string.gsub(relative_path, path_separator, ".")
+    -- The path seperator in relative_path is "/" even on Windows.
+    -- That seems to be what the 'lspconfig.util' uses.
+    return string.gsub(relative_path, "/", ".")
 end
 
 M.get_filename = function ()
