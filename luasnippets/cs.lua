@@ -58,7 +58,7 @@ return {
                 })
 
             end),
-            t(");"), -- parenthesis to end the method signature
+            t(")"), -- parenthesis to end the method signature
         }
     ),
     s(
