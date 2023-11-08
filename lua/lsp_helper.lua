@@ -34,23 +34,24 @@ M = {}
 }
 --]]
 M.get_signatures = function()
-    local active_clients = vim.lsp.get_active_clients()
 
-    local omni_sharp_client = nil
+    local current_bufnr = vim.api.nvim_get_current_buf()
+
+    local active_clients = vim.lsp.get_clients({bufnr = current_bufnr})
+
+    local current_client = nil
 
     for _, client in ipairs(active_clients) do
-        if client.name == "omnisharp" then
-            omni_sharp_client = client
-        end
+        current_client = client
     end
 
-    local request = vim.lsp.util.make_position_params(0, omni_sharp_client.offset_encoding)
+    local request = vim.lsp.util.make_position_params(0, current_client.offset_encoding)
 
     request.context = {
         triggerKind = 1,
     }
 
-    local response = omni_sharp_client.request_sync('textDocument/signatureHelp', request, 50)
+    local response = current_client.request_sync('textDocument/signatureHelp', request, 50)
     -- Below this is for testing
 
     if response == nil then
