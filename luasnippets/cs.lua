@@ -58,7 +58,7 @@ return {
                 })
 
             end),
-            t(")"), -- parenthesis to end the method signature
+            t({"", ")"}), -- parenthesis to end the method signature. Inserting a table with a blank as new entry puts a new line
         }
     ),
     s(
